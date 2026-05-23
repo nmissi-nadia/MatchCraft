@@ -1,7 +1,21 @@
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
 import uvicorn
 
-app = FastAPI(title="MatchCraft Python Agent API", version="1.0.0")
+from database import db
+from routers import router
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Démarrage : Connexion au pool PostgreSQL
+    await db.connect()
+    yield
+    # Arrêt : Déconnexion
+    await db.disconnect()
+
+app = FastAPI(title="MatchCraft Python Agent API", version="1.0.0", lifespan=lifespan)
+
+app.include_router(router)
 
 @app.get("/health")
 async def health_check():

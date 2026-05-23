@@ -1,5 +1,7 @@
 package com.matchcraft.dto;
 
+import java.util.List;
+
 public class OfferIngestDto {
     private String titre;
     private String nomEntreprise;
@@ -9,6 +11,7 @@ public class OfferIngestDto {
     private String plateformeSource;
     private Double scorePertinence;
     private Long userId;
+    private List<Long> projectIds;
 
     public String getTitre() { return titre; }
     public void setTitre(String titre) { this.titre = titre; }
@@ -26,4 +29,6 @@ public class OfferIngestDto {
     public void setScorePertinence(Double scorePertinence) { this.scorePertinence = scorePertinence; }
     public Long getUserId() { return userId; }
     public void setUserId(Long userId) { this.userId = userId; }
+    public List<Long> getProjectIds() { return projectIds; }
+    public void setProjectIds(List<Long> projectIds) { this.projectIds = projectIds; }
 }

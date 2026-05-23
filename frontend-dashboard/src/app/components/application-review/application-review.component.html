@@ -1,0 +1,81 @@
+<div class="p-6 bg-gray-50 min-h-screen" *ngIf="application">
+  <div class="max-w-5xl mx-auto space-y-6">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+      <h1 class="text-3xl font-bold text-gray-900">Revue de Candidature</h1>
+      <span class="px-4 py-1 inline-flex text-sm font-bold rounded-full bg-yellow-100 text-yellow-800 uppercase tracking-wide">
+        {{ application.statut }}
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <!-- Offre Details -->
+      <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+          <svg class="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+          Détails de l'Offre
+        </h2>
+        <div class="mb-2"><span class="font-semibold text-gray-600">Entreprise:</span> {{ application.offer.nomEntreprise }}</div>
+        <div class="mb-2"><span class="font-semibold text-gray-600">Poste:</span> <span class="text-gray-900">{{ application.offer.titre }}</span></div>
+        <div class="mb-2"><span class="font-semibold text-gray-600">Localisation:</span> {{ application.offer.localisation }}</div>
+        <div class="mb-4"><span class="font-semibold text-gray-600">Pertinence IA:</span> <span class="text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded">{{ application.offer.scorePertinence }}</span></div>
+        <h3 class="font-semibold text-gray-700 mb-2">Description extraite :</h3>
+        <p class="text-sm text-gray-600 whitespace-pre-wrap line-clamp-6 bg-gray-50 p-3 rounded border border-gray-100">{{ application.offer.descriptionBrute || 'Aucune description fournie' }}</p>
+      </div>
+
+      <!-- Selected Projects -->
+      <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+          <svg class="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+          Projets GitHub Sélectionnés
+        </h2>
+        <div *ngIf="application.projects.length === 0" class="text-sm text-gray-500 italic p-4 bg-gray-50 rounded">Aucun projet sélectionné par l'IA.</div>
+        <div class="space-y-4">
+          <div *ngFor="let project of application.projects" class="border border-gray-200 rounded-md p-4 hover:border-indigo-400 transition-colors duration-200 bg-gray-50">
+            <h3 class="font-bold text-indigo-600"><a [href]="project.url" target="_blank" class="hover:underline">{{ project.nom }}</a></h3>
+            <p class="text-sm text-gray-600 mt-1">{{ project.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email Editor -->
+    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+      <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+        <svg class="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+        Génération et Édition de l'Email
+      </h2>
+      
+      <form [formGroup]="mailForm" class="space-y-5">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">Sujet de l'email</label>
+          <input type="text" formControlName="sujetMail" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-3 border" placeholder="Candidature pour le poste de...">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">Corps de l'email</label>
+          <textarea formControlName="corpsMail" rows="10" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-3 border font-mono text-sm leading-relaxed" placeholder="Bonjour, ..."></textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-between pt-5 border-t border-gray-100">
+          <button type="button" (click)="onSaveDraft()" [disabled]="!mailForm.valid" class="px-5 py-2.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-all">
+            Sauvegarder le brouillon
+          </button>
+          
+          <div class="space-x-4">
+            <button type="button" (click)="onReject()" class="px-5 py-2.5 border border-transparent shadow-sm text-sm font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all">
+              Rejeter la candidature
+            </button>
+            <button type="button" (click)="onApprove()" class="px-5 py-2.5 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
+              Approuver & Prêt à l'envoi
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>

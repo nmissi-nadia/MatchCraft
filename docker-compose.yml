@@ -16,6 +16,38 @@ services:
       - matchcraft-network
     restart: unless-stopped
 
+  agent-python:
+    build:
+      context: ./agent-python
+      dockerfile: Dockerfile
+    container_name: matchcraft-agent-python
+    ports:
+      - "8000:8000"
+    networks:
+      - matchcraft-network
+    depends_on:
+      - db-postgres
+    restart: unless-stopped
+
+  backend-spring:
+    build:
+      context: ./backend-spring
+      dockerfile: Dockerfile
+    container_name: matchcraft-backend-spring
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: db-postgres
+      DB_PORT: 5432
+      DB_NAME: matchcraft
+      DB_USER: matchcraft_user
+      DB_PASSWORD: matchcraft_password
+    networks:
+      - matchcraft-network
+    depends_on:
+      - db-postgres
+    restart: unless-stopped
+
 volumes:
   postgres_data:
 

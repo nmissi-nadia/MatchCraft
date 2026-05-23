@@ -1,7 +1,3 @@
-Voici une version épurée, rigoureuse et entièrement professionnelle du document de présentation, débarrassée de tout emoji ou formulation familière. Ce document est parfaitement adapté pour figurer sur votre profil GitHub ou pour être présenté à un recruteur technique.
-
----
-
 # MatchCraft : Système Automatisé de Veille et d'Ajustement des Candidatures
 
 ## Présentation Générale

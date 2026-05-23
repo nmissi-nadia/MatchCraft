@@ -48,6 +48,19 @@ services:
       - db-postgres
     restart: unless-stopped
 
+  frontend-dashboard:
+    build:
+      context: ./frontend-dashboard
+      dockerfile: Dockerfile
+    container_name: matchcraft-frontend
+    ports:
+      - "4200:80"
+    networks:
+      - matchcraft-network
+    depends_on:
+      - backend-spring
+    restart: unless-stopped
+
 volumes:
   postgres_data:
 

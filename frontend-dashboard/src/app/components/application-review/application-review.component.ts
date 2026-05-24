@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { ApplicationService } from '../../services/application.service';
 import { Application } from '../../models/application.model';
 import { ApplicationStatus } from '../../models/application-status.enum';
@@ -8,7 +9,7 @@ import { ApplicationStatus } from '../../models/application-status.enum';
 @Component({
   selector: 'app-application-review',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './application-review.component.html'
 })
 export class ApplicationReviewComponent implements OnInit {

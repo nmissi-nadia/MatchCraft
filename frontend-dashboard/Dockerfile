@@ -24,7 +24,7 @@ FROM nginx:alpine
 COPY --from=builder /app/dist/frontend-dashboard/browser /usr/share/nginx/html
 
 # Optionnel mais recommandé pour Angular : copier une configuration nginx.conf pour gérer le fallback des routes (SPA)
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 

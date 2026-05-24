@@ -1,0 +1,2 @@
+INSERT INTO users (id, prenom, nom, email, titre_professionnel, competences_base) VALUES (1, 'Admin', 'User', 'admin@matchcraft.com', 'Développeur Full-Stack', '["Java", "Angular"]') ON CONFLICT (id) DO NOTHING;
+INSERT INTO projects (id, github_id, nom, description, url, user_id) VALUES (1, 'gh-123', 'Projet Spring', 'Un projet backend en Spring Boot', 'https://github.com/admin/spring', 1), (2, 'gh-456', 'Projet Angular', 'Un frontend en Angular', 'https://github.com/admin/angular', 1) ON CONFLICT (id) DO NOTHING;

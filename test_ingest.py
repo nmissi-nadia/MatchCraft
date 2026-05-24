@@ -2,7 +2,7 @@ import requests
 import json
 
 # L'API Spring Boot tourne sur le port 8080 (mappé depuis Docker)
-URL = "http://localhost:8080/api/offers/ingest"
+URL = "http://matchcraft-backend-spring:8080/api/offers/ingest"
 
 # Payload réaliste simulant les données renvoyées par l'agent Python après scraping et matching
 payload = {

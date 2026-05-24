@@ -17,4 +17,4 @@ class OfferCreate(BaseModel):
     description_brute: Optional[str] = None
     url: str
     plateforme_source: Optional[str] = None
-    score_pertinence: Optional[float] = None
+    estimated_relevance_score: Optional[float] = None

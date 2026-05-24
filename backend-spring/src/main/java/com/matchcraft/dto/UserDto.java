@@ -1,53 +1,20 @@
-package com.matchcraft.domain.entity;
+package com.matchcraft.dto;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
-import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "users") // 'user' is a reserved keyword in PostgreSQL
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class UserDto {
     private Long id;
-
-    @Column(nullable = false)
     private String prenom;
-
-    @Column(nullable = false)
     private String nom;
-
-    @Column(nullable = false, unique = true)
     private String email;
-
     private String telephone;
-
-    @Column(name = "titre_professionnel")
     private String titreProfessionnel;
-
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "competences_base", columnDefinition = "jsonb")
     private String competencesBase;
-
-    @Column(name = "github_username")
     private String githubUsername;
-
-    @Column(name = "cv_textuel", columnDefinition = "TEXT")
     private String cvTextuel;
+    private List<ProjectDto> projects;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Project> projects = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Application> applications = new ArrayList<>();
-
-    public User() {}
-
-    // Getters and Setters
+    public UserDto() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -76,9 +43,6 @@ public class User {
     public String getCvTextuel() { return cvTextuel; }
     public void setCvTextuel(String cvTextuel) { this.cvTextuel = cvTextuel; }
 
-    public List<Project> getProjects() { return projects; }
-    public void setProjects(List<Project> projects) { this.projects = projects; }
-
-    public List<Application> getApplications() { return applications; }
-    public void setApplications(List<Application> applications) { this.applications = applications; }
+    public List<ProjectDto> getProjects() { return projects; }
+    public void setProjects(List<ProjectDto> projects) { this.projects = projects; }
 }

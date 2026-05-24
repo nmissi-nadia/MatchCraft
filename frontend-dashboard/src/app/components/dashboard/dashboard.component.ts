@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { ApplicationService } from '../../services/application.service';
 import { Application } from '../../models/application.model';
 import { ApplicationStatus } from '../../models/application-status.enum';
@@ -7,7 +8,7 @@ import { ApplicationStatus } from '../../models/application-status.enum';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent implements OnInit {

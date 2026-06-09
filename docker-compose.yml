@@ -42,6 +42,8 @@ services:
       DB_NAME: matchcraft
       DB_USER: matchcraft_user
       DB_PASSWORD: matchcraft_password
+    env_file:
+      - .env
     networks:
       - matchcraft-network
     depends_on:

@@ -1,0 +1,66 @@
+<div class="min-h-screen bg-stone-50 text-gray-900 p-8 font-sans flex flex-col justify-center">
+  <div class="max-w-7xl mx-auto space-y-12 w-full">
+    
+    <!-- Top Section: KPIs -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white border border-gray-200 p-6 rounded-lg shadow-sm flex items-center">
+        <div class="p-3 rounded-md bg-stone-100 text-stone-600 mr-4">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+        </div>
+        <div>
+          <p class="text-sm font-bold text-gray-500 uppercase tracking-wider">Offres Analysées</p>
+          <p class="text-2xl font-black text-gray-900">142</p>
+        </div>
+      </div>
+      
+      <div class="bg-white border border-gray-200 p-6 rounded-lg shadow-sm flex items-center">
+        <div class="p-3 rounded-md bg-green-50 text-green-700 mr-4">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+        <div>
+          <p class="text-sm font-bold text-gray-500 uppercase tracking-wider">Candidatures Envoyées</p>
+          <p class="text-2xl font-black text-gray-900">12</p>
+        </div>
+      </div>
+      
+      <div class="bg-white border border-gray-200 p-6 rounded-lg shadow-sm flex items-center">
+        <div class="p-3 rounded-md bg-yellow-50 text-yellow-600 mr-4">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+        <div>
+          <p class="text-sm font-bold text-gray-500 uppercase tracking-wider">En attente de validation</p>
+          <p class="text-2xl font-black text-gray-900">4</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Center Section: Hero / Action -->
+    <div class="bg-white border border-stone-200 rounded-xl p-12 text-center shadow-sm relative overflow-hidden">
+      <!-- Subtle beige background for the center content -->
+      <div class="absolute inset-0 bg-[#fdfbf7]"></div>
+      
+      <div class="relative z-10">
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">Intelligence de Matching</h1>
+        <p class="text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+          Le pipeline d'intelligence artificielle parcourt en continu les plateformes d'emploi pour trouver les meilleures opportunités. 
+          Pour tester le flux complet, vous pouvez déclencher une ingestion manuelle immédiate.
+        </p>
+        
+        <button 
+          (click)="triggerMockScraping()" 
+          [disabled]="isLoading"
+          class="inline-flex items-center justify-center px-10 py-4 border border-transparent shadow-sm text-lg font-bold rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all disabled:opacity-50">
+          <span *ngIf="isLoading" class="animate-spin mr-3 h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+          <svg *ngIf="!isLoading" class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          {{ isLoading ? 'Ingestion en cours...' : 'Simuler une nouvelle offre (Pipeline IA)' }}
+        </button>
+        
+        <div *ngIf="successMessage" class="mt-8 mx-auto inline-flex items-center text-sm font-bold text-green-700 bg-green-50 px-5 py-3 rounded-md border border-green-200 shadow-sm">
+          <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          {{ successMessage }}
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>

@@ -1,78 +1,73 @@
-<div class="min-h-screen bg-slate-900 text-slate-100 p-8 relative overflow-hidden font-sans">
-  <!-- Dynamic Background Gradients -->
-  <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-600/20 blur-[120px]"></div>
-  <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-fuchsia-600/20 blur-[120px]"></div>
-  
-  <div class="max-w-7xl mx-auto relative z-10">
+<div class="min-h-screen bg-stone-50 text-gray-900 p-8 font-sans">
+  <div class="max-w-7xl mx-auto">
     <!-- Header -->
-    <header class="mb-12 flex justify-between items-center">
+    <header class="mb-8 flex justify-between items-center">
       <div>
-        <h1 class="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-fuchsia-400">MatchCraft Intelligence</h1>
-        <p class="text-slate-400 mt-2 font-medium">Tableau de bord de validation des candidatures (Human-in-the-loop)</p>
+        <h1 class="text-3xl font-extrabold tracking-tight text-gray-900">MatchCraft Intelligence</h1>
+        <p class="text-gray-500 mt-1 font-medium">Tableau de bord de validation des candidatures (Human-in-the-loop)</p>
       </div>
-      <div class="glass-panel px-6 py-3 rounded-full flex items-center space-x-3">
-        <div class="h-3 w-3 rounded-full bg-green-400 animate-pulse shadow-[0_0_10px_#4ade80]"></div>
-        <span class="text-sm font-semibold tracking-wide text-slate-200">SYSTÈME ACTIF</span>
+      <div class="flex items-center space-x-4">
+        <button (click)="triggerScraper()" [disabled]="isScraping" class="inline-flex items-center px-4 py-2 border border-transparent rounded-full shadow-sm text-sm font-bold text-white bg-stone-800 hover:bg-stone-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-stone-500 transition-colors disabled:opacity-50">
+          <svg *ngIf="!isScraping" class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <svg *ngIf="isScraping" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+          {{ isScraping ? 'Recherche en cours...' : 'Chercher des offres (Maroc)' }}
+        </button>
+        <div class="bg-white border border-gray-200 px-4 py-2 rounded-full flex items-center space-x-2 shadow-sm">
+          <div class="h-2.5 w-2.5 rounded-full bg-green-500"></div>
+          <span class="text-xs font-bold tracking-wide text-gray-700">SYSTÈME ACTIF</span>
+        </div>
       </div>
     </header>
     
-    <!-- Table Container (Glass Card) -->
-    <div class="glass-card rounded-2xl overflow-hidden">
+    <!-- Table Container -->
+    <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="bg-white/5 border-b border-white/10">
-            <th class="px-8 py-5 text-xs font-bold text-slate-300 uppercase tracking-widest">Poste & Entreprise</th>
-            <th class="px-8 py-5 text-xs font-bold text-slate-300 uppercase tracking-widest">Localisation</th>
-            <th class="px-8 py-5 text-xs font-bold text-slate-300 uppercase tracking-widest text-center">Score IA</th>
-            <th class="px-8 py-5 text-xs font-bold text-slate-300 uppercase tracking-widest">Statut</th>
-            <th class="px-8 py-5 text-xs font-bold text-slate-300 uppercase tracking-widest text-right">Actions</th>
+          <tr class="bg-stone-50 border-b border-gray-200">
+            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Poste & Entreprise</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Localisation</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">Score IA</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Statut</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-white/5">
-          <tr *ngFor="let app of applications" class="hover:bg-white/5 transition-all duration-300 group cursor-pointer">
-            <td class="px-8 py-5">
-              <div class="font-bold text-lg text-white group-hover:text-indigo-300 transition-colors">{{ app.offer.titre }}</div>
-              <div class="text-slate-400 font-medium flex items-center mt-1">
-                <svg class="w-4 h-4 mr-1.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+        <tbody class="divide-y divide-gray-200">
+          <tr *ngFor="let app of applications" class="hover:bg-stone-50 transition-colors">
+            <td class="px-6 py-4">
+              <div class="font-bold text-base text-gray-900">{{ app.offer.titre }}</div>
+              <div class="text-gray-500 text-sm mt-1 flex items-center">
+                <svg class="w-4 h-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                 {{ app.offer.nomEntreprise }}
               </div>
             </td>
-            <td class="px-8 py-5 text-slate-300 font-medium">
+            <td class="px-6 py-4 text-gray-600 text-sm">
               <div class="flex items-center">
-                <svg class="w-4 h-4 mr-1.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <svg class="w-4 h-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 {{ app.offer.localisation }}
               </div>
             </td>
-            <td class="px-8 py-5 text-center">
-              <div class="inline-flex items-center justify-center relative">
-                <!-- Outer glow -->
-                <div class="absolute inset-0 bg-indigo-500 rounded-full blur-md opacity-30 group-hover:opacity-60 transition-opacity"></div>
-                <!-- Badge -->
-                <span class="relative px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 font-bold border border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
-                  {{ app.offer.scorePertinence | number:'1.0-2' }}
-                </span>
-              </div>
+            <td class="px-6 py-4 text-center">
+              <span class="px-2.5 py-1 rounded-md bg-stone-100 text-green-700 font-bold border border-green-200 text-sm">
+                {{ app.offer.scorePertinence | number:'1.0-2' }}
+              </span>
             </td>
-            <td class="px-8 py-5">
-              <span [class]="'px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-md border shadow-sm ' + getStatusClass(app.statut)">
+            <td class="px-6 py-4">
+              <span [class]="'px-2.5 py-1 text-xs font-bold uppercase tracking-wider rounded-md border ' + getStatusClass(app.statut)">
                 {{ app.statut }}
               </span>
             </td>
-            <td class="px-8 py-5 text-right">
-              <a [routerLink]="['/review', app.id]" class="inline-flex items-center px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-all duration-300 transform group-hover:scale-105 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+            <td class="px-6 py-4 text-right">
+              <a [routerLink]="['/review', app.id]" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                 Examiner
-                <svg class="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
               </a>
             </td>
           </tr>
           
           <tr *ngIf="applications.length === 0">
-            <td colspan="5" class="px-8 py-16 text-center">
-              <div class="inline-flex flex-col items-center justify-center p-8 glass-panel rounded-2xl border-dashed border-white/20">
-                <svg class="w-16 h-16 text-slate-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                <p class="text-xl font-bold text-slate-300">Aucune candidature en attente</p>
-                <p class="text-slate-500 mt-2">Le pipeline d'intelligence artificielle est actuellement vide.</p>
-              </div>
+            <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+              <svg class="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              <p class="text-base font-medium text-gray-900">Aucune candidature en attente</p>
+              <p class="text-sm mt-1">Le pipeline d'intelligence artificielle est actuellement vide.</p>
             </td>
           </tr>
         </tbody>

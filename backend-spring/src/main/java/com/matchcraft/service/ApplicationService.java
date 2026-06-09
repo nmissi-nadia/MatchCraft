@@ -13,10 +13,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ApplicationService {
-    private final ApplicationRepository applicationRepository;
 
-    public ApplicationService(ApplicationRepository applicationRepository) {
+    private final ApplicationRepository applicationRepository;
+    private final PdfGenerationService pdfGenerationService;
+    private final EmailService emailService;
+
+    public ApplicationService(ApplicationRepository applicationRepository,
+                              PdfGenerationService pdfGenerationService,
+                              EmailService emailService) {
         this.applicationRepository = applicationRepository;
+        this.pdfGenerationService = pdfGenerationService;
+        this.emailService = emailService;
     }
 
     @Transactional(readOnly = true)
@@ -42,9 +49,39 @@ public class ApplicationService {
 
     @Transactional
     public Application updateDocuments(Long id, ApplicationDocumentsUpdateDto dto) {
+        Application app = getApplicationById(id);
+        app.setSujetMail(dto.getSujetMail());
+        app.setCorpsMail(dto.getCorpsMail());
+        return applicationRepository.save(app);
+    }
+
+    public Application sendApplication(Long id, java.util.Map<String, String> payload) {
         Application application = getApplicationById(id);
-        application.setSujetMail(dto.getSujetMail());
-        application.setCorpsMail(dto.getCorpsMail());
-        return applicationRepository.save(application);
+
+        String finalSubject = payload.get("sujetMail");
+        String finalBody = payload.get("corpsMail");
+        
+        if (finalSubject == null || finalSubject.trim().isEmpty() || finalSubject.length() < 5) {
+            throw new IllegalArgumentException("Le sujet de l'email est invalide ou trop court.");
+        }
+        if (finalBody == null || finalBody.trim().isEmpty() || finalBody.length() < 20) {
+            throw new IllegalArgumentException("Le corps de l'email est invalide ou trop court.");
+        }
+
+        String recipient = "test@entreprise.com"; 
+
+        try {
+            // 1. Generate PDF
+            byte[] pdfBytes = pdfGenerationService.generateCvPdf(application);
+            
+            // 2. Send Email
+            emailService.sendApplicationEmail(recipient, finalSubject, finalBody, pdfBytes);
+
+            // 3. Update status
+            application.setStatut(ApplicationStatus.SENT);
+            return applicationRepository.save(application);
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de l'envoi de la candidature", e);
+        }
     }
 }

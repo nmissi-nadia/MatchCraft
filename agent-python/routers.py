@@ -66,3 +66,43 @@ async def scrape_trigger(offer: OfferCreate):
     except Exception as e:
         print(f"Error scrape: {e}")
         raise HTTPException(status_code=500, detail="Erreur interne lors du traitement de l'offre.")
+
+class ScrapeRequest(BaseModel):
+    keyword: str
+    user_id: int = 1
+
+from scraper import scrape_rekrute_jobs
+
+@router.post("/run-scraper")
+async def run_scraper(request: ScrapeRequest):
+    try:
+        offers = await asyncio.to_thread(scrape_rekrute_jobs, request.keyword)
+        
+        inserted_count = 0
+        applications_created = 0
+        
+        for offer in offers:
+            # 1. Inserer l'offre
+            offer_id = await insert_offer_ignore(offer)
+            if offer_id:
+                inserted_count += 1
+                # 2. Si le score est bon, generer la candidature
+                if offer.estimated_relevance_score and offer.estimated_relevance_score >= 0.80:
+                    app_id = await create_mock_application(
+                        offer_id=offer_id, 
+                        offer_title=offer.titre, 
+                        company_name=offer.nom_entreprise or "l'entreprise", 
+                        user_id=request.user_id
+                    )
+                    if app_id:
+                        applications_created += 1
+                        
+        return {
+            "status": "success",
+            "offers_found": len(offers),
+            "offers_inserted": inserted_count,
+            "applications_created": applications_created
+        }
+    except Exception as e:
+        print(f"Error run_scraper: {e}")
+        raise HTTPException(status_code=500, detail="Échec du scraping.")

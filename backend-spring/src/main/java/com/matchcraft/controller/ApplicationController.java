@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/applications")
+@CrossOrigin(origins = "*")
 public class ApplicationController {
 
     private final ApplicationService applicationService;
@@ -49,6 +50,12 @@ public class ApplicationController {
             @PathVariable Long id,
             @RequestBody ApplicationDocumentsUpdateDto dto) {
         Application application = applicationService.updateDocuments(id, dto);
+        return ResponseEntity.ok(mapToDto(application));
+    }
+
+    @PostMapping("/{id}/send")
+    public ResponseEntity<ApplicationDto> sendApplication(@PathVariable Long id, @RequestBody java.util.Map<String, String> payload) {
+        Application application = applicationService.sendApplication(id, payload);
         return ResponseEntity.ok(mapToDto(application));
     }
 

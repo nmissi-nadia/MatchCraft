@@ -68,8 +68,19 @@ async def create_mock_application(offer_id: int, offer_title: str, company_name:
     """
     
     generated_cv_path = f"/storage/cv_generated_{user_id}.pdf"
-    generated_email_subject = f"Candidature - {offer_title} - Tech Profile"
-    generated_email_body = f"Bonjour,\n\nJe vous écris pour postuler au poste de {offer_title} au sein de {company_name}. Je suis convaincu que mon profil correspond à vos attentes."
+    generated_email_subject = f"Candidature : {offer_title} - Profil Tech"
+    generated_email_body = f"""Bonjour,
+
+Je vous écris pour vous faire part de mon vif intérêt pour le poste de {offer_title} au sein de {company_name}.
+
+Grâce à mon expérience dans le développement logiciel et à ma capacité à m'adapter rapidement aux nouveaux défis technologiques, je suis convaincu(e) de pouvoir contribuer efficacement à vos projets. Mon approche orientée résultat et ma passion pour le code propre me permettent de m'intégrer facilement au sein d'équipes dynamiques.
+
+Vous trouverez en pièce jointe mon CV détaillé. Je me tiens à votre entière disposition pour échanger de vive voix sur la manière dont mes compétences répondront à vos besoins.
+
+Dans l'attente de votre retour, je vous prie d'agréer mes salutations distinguées.
+
+Cordialement,
+(Généré par MatchCraft)"""
     
     try:
         async with get_db_connection() as conn:

@@ -44,6 +44,8 @@ services:
       DB_PASSWORD: matchcraft_password
     env_file:
       - .env
+    volumes:
+      - ./cvs:/app/cvs
     networks:
       - matchcraft-network
     depends_on:

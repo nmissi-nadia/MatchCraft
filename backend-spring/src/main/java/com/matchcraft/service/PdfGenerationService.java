@@ -1,45 +1,41 @@
 package com.matchcraft.service;
 
 import com.matchcraft.domain.entity.Application;
-import com.matchcraft.domain.entity.Project;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.StreamUtils;
 
-import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
-
-import java.io.ByteArrayOutputStream;
-import java.util.List;
+import java.io.InputStream;
 
 @Service
 public class PdfGenerationService {
 
-    private final TemplateEngine templateEngine;
-
-    @Autowired
-    public PdfGenerationService(TemplateEngine templateEngine) {
-        this.templateEngine = templateEngine;
-    }
-
     public byte[] generateCvPdf(Application application) throws Exception {
-        Context context = new Context();
-        context.setVariable("user", application.getUser());
-        context.setVariable("offer", application.getOffer());
+        String title = application.getOffer().getTitre() != null ? application.getOffer().getTitre().toLowerCase() : "";
+        String desc = application.getOffer().getDescriptionBrute() != null ? application.getOffer().getDescriptionBrute().toLowerCase() : "";
         
-        // On ne passe que les projets sélectionnés par l'IA (ou l'utilisateur)
-        List<Project> selectedProjects = application.getProjects();
-        context.setVariable("projects", selectedProjects);
+        String contentToAnalyze = title + " " + desc;
+        
+        String selectedCvFile = "NMISSI_N_CV_Full_Stack.pdf"; // Default
+        
+        if (contentToAnalyze.contains("php") || contentToAnalyze.contains("laravel") || contentToAnalyze.contains("symfony")) {
+            selectedCvFile = "NMISSI_N_PHP_CV.pdf";
+        } else if (contentToAnalyze.contains("angular")) {
+            selectedCvFile = "NMISSI_CV_ANG.pdf";
+        } else if (contentToAnalyze.contains("react") || contentToAnalyze.contains("frontend") || contentToAnalyze.contains("vue")) {
+            selectedCvFile = "NMISSI_N_CV_RA.pdf"; 
+        } else if (contentToAnalyze.contains("spring") || contentToAnalyze.contains("java") || contentToAnalyze.contains("python") || contentToAnalyze.contains("backend") || contentToAnalyze.contains("data")) {
+            selectedCvFile = "NMISSI_N_CV.pdf";
+        }
 
-        String htmlContent = templateEngine.process("cv-template", context);
-
-        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-            PdfRendererBuilder builder = new PdfRendererBuilder();
-            builder.useFastMode();
-            builder.withHtmlContent(htmlContent, "/");
-            builder.toStream(os);
-            builder.run();
-            return os.toByteArray();
+        try {
+            java.io.File pdfFile = new java.io.File("/app/cvs/" + selectedCvFile);
+            try (InputStream is = new java.io.FileInputStream(pdfFile)) {
+                return StreamUtils.copyToByteArray(is);
+            }
+        } catch (Exception e) {
+            System.err.println("Le fichier CV " + selectedCvFile + " est introuvable. On retourne un tableau vide.");
+            throw new RuntimeException("CV non trouvé : " + selectedCvFile, e);
         }
     }
 }

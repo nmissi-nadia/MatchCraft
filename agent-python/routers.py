@@ -54,9 +54,8 @@ async def scrape_trigger(offer: OfferCreate):
         
         if offer.estimated_relevance_score and offer.estimated_relevance_score >= 0.80:
             app_id = await create_mock_application(
+                offer=offer,
                 offer_id=offer_id, 
-                offer_title=offer.titre, 
-                company_name=offer.nom_entreprise or "l'entreprise", 
                 user_id=1
             )
             if app_id:
@@ -89,9 +88,8 @@ async def run_scraper(request: ScrapeRequest):
                 # 2. Si le score est bon, generer la candidature
                 if offer.estimated_relevance_score and offer.estimated_relevance_score >= 0.80:
                     app_id = await create_mock_application(
+                        offer=offer,
                         offer_id=offer_id, 
-                        offer_title=offer.titre, 
-                        company_name=offer.nom_entreprise or "l'entreprise", 
                         user_id=request.user_id
                     )
                     if app_id:

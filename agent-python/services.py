@@ -60,7 +60,7 @@ async def insert_offer_ignore(offer: OfferCreate):
         print(f"Erreur SQL lors de l'insertion de l'offre: {e}")
         raise
 
-async def create_mock_application(offer_id: int, offer_title: str, company_name: str, user_id: int = 1):
+async def create_mock_application(offer: OfferCreate, offer_id: int, user_id: int = 1):
     query = """
         INSERT INTO applications (offer_id, user_id, statut, chemin_cv_genere, sujet_mail, corps_mail, date_envoi)
         VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP)
@@ -68,10 +68,10 @@ async def create_mock_application(offer_id: int, offer_title: str, company_name:
     """
     
     generated_cv_path = f"/storage/cv_generated_{user_id}.pdf"
-    generated_email_subject = f"Candidature : {offer_title} - Profil Tech"
+    generated_email_subject = f"Candidature : {offer.titre} - Profil Tech"
     generated_email_body = f"""Bonjour,
 
-Je vous écris pour vous faire part de mon vif intérêt pour le poste de {offer_title} au sein de {company_name}.
+Je vous écris pour vous faire part de mon vif intérêt pour le poste de {offer.titre} au sein de {offer.nom_entreprise or "votre entreprise"}.
 
 Grâce à mon expérience dans le développement logiciel et à ma capacité à m'adapter rapidement aux nouveaux défis technologiques, je suis convaincu(e) de pouvoir contribuer efficacement à vos projets. Mon approche orientée résultat et ma passion pour le code propre me permettent de m'intégrer facilement au sein d'équipes dynamiques.
 
@@ -99,6 +99,42 @@ Cordialement,
                 generated_email_subject,
                 generated_email_body
             )
+
+            if application_id:
+                # Retrieve all projects for the user
+                projects = await conn.fetch(
+                    "SELECT id, nom, description, langages FROM projects WHERE user_id = $1", 
+                    user_id
+                )
+                
+                # Basic keyword matching algorithm
+                offer_text = (offer.titre + " " + (offer.description_brute or "")).lower()
+                tech_keywords = ["java", "spring", "angular", "react", "python", "fastapi", "docker", "postgres", "sql", "javascript", "typescript", "php", "laravel", "vue", "node"]
+                
+                found_keywords = [kw for kw in tech_keywords if kw in offer_text]
+                
+                scored_projects = []
+                for proj in projects:
+                    score = 0
+                    proj_text = (str(proj['nom']) + " " + str(proj['description']) + " " + str(proj['langages'])).lower()
+                    
+                    # Score based on keywords
+                    for kw in found_keywords:
+                        if kw in proj_text:
+                            score += 1
+                    
+                    scored_projects.append((score, proj['id']))
+                
+                # Sort by score descending, then fallback to first ones if scores are equal
+                scored_projects.sort(key=lambda x: x[0], reverse=True)
+                top_projects = scored_projects[:3]
+
+                for score, proj_id in top_projects:
+                    await conn.execute(
+                        "INSERT INTO application_project (application_id, project_id) VALUES ($1, $2) ON CONFLICT DO NOTHING",
+                        application_id, proj_id
+                    )
+
             return application_id
     except asyncpg.PostgresError as e:
         print(f"Erreur SQL lors de la création de la candidature: {e}")

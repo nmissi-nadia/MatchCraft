@@ -70,6 +70,7 @@ export class ApplicationReviewComponent implements OnInit {
     const defaultCorps = `Bonjour,\n\nJe vous contacte suite à votre annonce pour le poste de ${this.application?.offer?.titre}.\n\nMon profil correspond particulièrement à vos attentes, notamment de par mon expérience sur des projets tels que ${this.application?.projects[0]?.nom || 'ceux détaillés dans mon CV'}.\n\nVous trouverez ci-joint mon CV détaillé.\n\nCordialement,\nNadia`;
 
     this.mailForm = this.fb.group({
+      destinataireMail: ['', [Validators.required, Validators.email]],
       sujetMail: [this.application?.sujetMail || defaultSujet, [Validators.required, Validators.minLength(5)]],
       corpsMail: [this.application?.corpsMail || defaultCorps, [Validators.required, Validators.minLength(20)]]
     });
@@ -103,6 +104,7 @@ export class ApplicationReviewComponent implements OnInit {
     if (this.application && this.mailForm.valid) {
       this.isLoading = true;
       const payload = {
+        destinataireMail: this.mailForm.value.destinataireMail,
         sujetMail: this.mailForm.value.sujetMail,
         corpsMail: this.mailForm.value.corpsMail
       };

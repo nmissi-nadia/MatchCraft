@@ -60,6 +60,7 @@ public class ApplicationService {
 
         String finalSubject = payload.get("sujetMail");
         String finalBody = payload.get("corpsMail");
+        String recipient = payload.get("destinataireMail");
         
         if (finalSubject == null || finalSubject.trim().isEmpty() || finalSubject.length() < 5) {
             throw new IllegalArgumentException("Le sujet de l'email est invalide ou trop court.");
@@ -67,8 +68,9 @@ public class ApplicationService {
         if (finalBody == null || finalBody.trim().isEmpty() || finalBody.length() < 20) {
             throw new IllegalArgumentException("Le corps de l'email est invalide ou trop court.");
         }
-
-        String recipient = "test@entreprise.com"; 
+        if (recipient == null || recipient.trim().isEmpty() || !recipient.contains("@")) {
+            throw new IllegalArgumentException("L'adresse email du destinataire est invalide.");
+        }
 
         try {
             // 1. Generate PDF
@@ -81,6 +83,7 @@ public class ApplicationService {
             application.setStatut(ApplicationStatus.SENT);
             return applicationRepository.save(application);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("Erreur lors de l'envoi de la candidature", e);
         }
     }

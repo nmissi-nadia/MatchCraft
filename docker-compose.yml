@@ -42,6 +42,7 @@ services:
       DB_NAME: matchcraft
       DB_USER: matchcraft_user
       DB_PASSWORD: matchcraft_password
+      GITHUB_USERNAME: ${GITHUB_USERNAME:-nmissi-nadia}
     env_file:
       - .env
     volumes:

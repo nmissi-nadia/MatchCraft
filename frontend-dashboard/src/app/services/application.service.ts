@@ -51,6 +51,11 @@ export class ApplicationService {
       .pipe(catchError(this.handleError));
   }
 
+  exportApplicationsCsv(): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/export`, { responseType: 'blob' })
+      .pipe(catchError(this.handleError));
+  }
+
   runScraper(keyword: string): Observable<any> {
     const payload = {
       keyword: keyword,

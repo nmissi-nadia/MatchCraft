@@ -59,6 +59,19 @@ public class ApplicationController {
         return ResponseEntity.ok(mapToDto(application));
     }
 
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> exportSentApplications() {
+        String csvContent = applicationService.exportSentApplicationsToCsv();
+        byte[] content = csvContent.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.parseMediaType("text/csv"));
+        headers.setContentDispositionFormData("attachment", "candidatures_envoyees.csv");
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+        
+        return new ResponseEntity<>(content, headers, org.springframework.http.HttpStatus.OK);
+    }
+
     private ApplicationDto mapToDto(Application app) {
         ApplicationDto dto = new ApplicationDto();
         dto.setId(app.getId());

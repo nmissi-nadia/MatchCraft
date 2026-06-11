@@ -87,4 +87,44 @@ public class ApplicationService {
             throw new RuntimeException("Erreur lors de l'envoi de la candidature", e);
         }
     }
+
+    @Transactional(readOnly = true)
+    public String exportSentApplicationsToCsv() {
+        java.util.List<Application> sentApps = applicationRepository.findByStatut(ApplicationStatus.SENT);
+        StringBuilder csv = new StringBuilder();
+        
+        // Header (with BOM for Excel to recognize UTF-8)
+        csv.append('\uFEFF');
+        csv.append("Date;Entreprise;Ville;Besoin;Canal de Contact;Lien de l'offre;Retour de l'entreprise\n");
+        
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        for (Application app : sentApps) {
+            String date = app.getDateEnvoi() != null ? app.getDateEnvoi().format(formatter) : "";
+            String entreprise = "";
+            String ville = "";
+            String besoin = "";
+            String canal = "";
+            String lien = "";
+            
+            if (app.getOffer() != null) {
+                entreprise = app.getOffer().getNomEntreprise() != null ? app.getOffer().getNomEntreprise().replace(";", ",") : "";
+                ville = app.getOffer().getLocalisation() != null ? app.getOffer().getLocalisation().replace(";", ",") : "";
+                besoin = app.getOffer().getTitre() != null ? app.getOffer().getTitre().replace(";", ",") : "";
+                canal = app.getOffer().getPlateformeSource() != null ? app.getOffer().getPlateformeSource().replace(";", ",") : "";
+                lien = app.getOffer().getUrl() != null ? app.getOffer().getUrl().replace(";", ",") : "";
+            }
+            
+            String retour = "Non";
+
+            csv.append(date).append(";")
+               .append(entreprise).append(";")
+               .append(ville).append(";")
+               .append(besoin).append(";")
+               .append(canal).append(";")
+               .append(lien).append(";")
+               .append(retour).append("\n");
+        }
+        return csv.toString();
+    }
 }

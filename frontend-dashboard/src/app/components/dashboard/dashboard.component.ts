@@ -59,4 +59,27 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
+
+  isExporting = false;
+
+  exportToCsv(): void {
+    this.isExporting = true;
+    this.applicationService.exportApplicationsCsv().subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'candidatures_envoyees.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        this.isExporting = false;
+      },
+      error: (err) => {
+        console.error('Erreur lors de l\'export', err);
+        this.isExporting = false;
+      }
+    });
+  }
 }

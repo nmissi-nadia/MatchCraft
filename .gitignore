@@ -42,3 +42,6 @@ hs_err_pid*
 replay_pid*
 .env  
  
+# Ignore local CVs
+cvs/
+backend-spring/src/main/resources/cvs/
